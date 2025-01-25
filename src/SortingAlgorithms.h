@@ -3,9 +3,13 @@
 #include <utility>
 #include <random>
 #include <iostream>
+#include "raylib.h"
 #include "Cell.h"
 
-void Shuffle(std::vector<int>& arr);
+void ShuffleVisual(Cell& cell);
+void Shuffle(Cell& cell);
+
+void ShufflePro(std::vector<int>& arr);
 
 bool isSorted(const std::vector<int>& arr);
 
@@ -25,6 +29,42 @@ void InsertionSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
 
 void BinaryInsertionSort(Cell& cell);
 void BinaryInsertionSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
+
+void ShakerSort(Cell& cell);
+void ShakerSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
+
+void QuickSort(Cell& cell);
+void QuickSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
+
+void MergeSort(Cell& cell);
+void MergeSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
+
+void HeapSort(Cell& cell);
+void HeapSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
+
+void CombSort(Cell& cell);
+void CombSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
+
+void ShellSort(Cell& cell);
+void ShellSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
+
+void BucketSort(Cell& cell);
+void BucketSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
+
+void CountingSort(Cell& cell);
+void CountingSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
+
+void LSDRadixSort(Cell& cell);
+void LSDRadixSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
+
+void MSDRadixSort(Cell& cell);
+void MSDRadixSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
+
+void PancakeSort(Cell& cell);
+void PancakeSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
+
+void CycleSort(Cell& cell);
+void CycleSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
 
 // ESOTERICS
 

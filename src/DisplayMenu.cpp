@@ -120,13 +120,17 @@ void Display::menuLoop() {
 			}
 
 			// crea un array ordenado del 1 al n;
-			std::vector<int> initialVector;
-			for (int i = 0; i<possibleSamples[sampleSize]; i++) {
-				initialVector.push_back(i+1);
-			}
+			std::vector<int> initialVector(possibleSamples[sampleSize]);
+			std::vector<int> rNumberSequence(possibleSamples[sampleSize]);
 
-			// lo desordena
-			Shuffle(initialVector);
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::uniform_int_distribution<> dis(0, possibleSamples[sampleSize] - 1);
+
+			for (int i = 0; i<possibleSamples[sampleSize]; i++) {
+				initialVector[i] = i+1;
+				rNumberSequence[i] = dis(gen);
+			}
 			
 			// se lo asigna a cada celula y pone a andar cada hilo
 			for (int i = 0; i<usingAlgorithmsN; i++) {
@@ -134,8 +138,11 @@ void Display::menuLoop() {
 				this->cells[i].iter2 = -1;
 				this->cells[i].iter3 = -1;
 				this->cells[i].iter4 = -1;
+				this->cells[i].iter5 = -1;
 
 				this->cells[i].array = initialVector;
+				this->cells[i].rNumbers = rNumberSequence;
+
 				this->cells[i].algorithmFunc = algorithmFuncPtr[cells[i].id];
 				this->cells[i].algorithmFuncVisual = algorithmFuncVisualPtr[cells[i].id];
 				this->cells[i].thread = std::thread(&Display::measureAlgorithmTime, this, &cells[i]);

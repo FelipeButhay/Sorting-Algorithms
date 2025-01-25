@@ -9,11 +9,13 @@
 #define DARKWHITE  CLITERAL(Color){ 170, 170, 170, 255 }
 #define DARKRED    CLITERAL(Color){ 135,   9,   9, 255 }
 
-#define algorithmsN 11
+#define algorithmsN 23
 #define lineSizeU 1.4
 
-#define samplesN 14
+#define samplesN 20
 #define timesN 14
+
+#define M 1000
 
 using chronoMoment = std::chrono::steady_clock::time_point;
 using chronoDuration = std::chrono::duration<double, std::milli>;
@@ -30,18 +32,90 @@ class Display {
 
 	// lista de los nombres de los algoritmos
 	std::string algorithms[algorithmsN] = {
-		"Bubble Sort", "Selection Sort", "Double Selection Sort", "Insertion Sort", "Binary Insertion Sort", "*Bogo Sort", "*Stalin Sort",
-		"*Sleep Sort", "*Miracle Sort", "*SnowFlakeSort", "*Bozo Sort"
+		"Bubble Sort",
+		"Shaker Sort",
+		"Selection Sort",
+		"Double Selection Sort",
+		"Insertion Sort",
+		"Binary Insertion Sort",
+
+		"Quick Sort",
+		"Merge Sort",
+		"Heap Sort",
+		"Comb Sort",
+		"Shell Sort",
+		"Bucket Sort",
+		"Counting Sort",
+		"LSD Radix Sort",
+		"MSD Radix Sort",
+
+		"Pancake Sort",
+		"Cycle Sort",
+
+		"*Bogo Sort",
+		"*Stalin Sort",
+		"*Sleep Sort",
+		"*Miracle Sort",
+		"*SnowFlakeSort",
+		"*Bozo Sort"
 	};
 
 	// lista de punteros a las funciones de los algoritmos
 	void (*algorithmFuncPtr[algorithmsN])(std::vector<int>&, std::atomic<bool>&) = {
-		BubbleSort, SelectionSort, DoubleSelectionSort, InsertionSort, BinaryInsertionSort, BogoSort, StalinSort, 
-		SleepSort, MiracleSort, SnowFlakeSort, BozoSort
+		BubbleSort,
+		ShakerSort,
+		SelectionSort,
+		DoubleSelectionSort,
+		InsertionSort,
+		BinaryInsertionSort,
+
+		QuickSort,
+		MergeSort,
+		HeapSort,
+		CombSort,
+		ShellSort,
+		BucketSort,
+		CountingSort,
+		LSDRadixSort,
+		MSDRadixSort,
+
+		PancakeSort,
+		CycleSort,
+
+		BogoSort,
+		StalinSort,
+		SleepSort,
+		MiracleSort,
+		SnowFlakeSort,
+		BozoSort
 	};
 	void (*algorithmFuncVisualPtr[algorithmsN])(Cell&) = {
-		BubbleSort, SelectionSort, DoubleSelectionSort, InsertionSort, BinaryInsertionSort, BogoSort, StalinSort,
-		SleepSort, MiracleSort, SnowFlakeSort, BozoSort
+		BubbleSort,
+		ShakerSort,
+		SelectionSort,
+		DoubleSelectionSort,
+		InsertionSort,
+		BinaryInsertionSort,
+
+		QuickSort,
+		MergeSort,
+		HeapSort,
+		CombSort,
+		ShellSort,
+		BucketSort,
+		CountingSort,
+		LSDRadixSort,
+		MSDRadixSort,
+
+		PancakeSort,
+		CycleSort,
+
+		BogoSort,
+		StalinSort,
+		SleepSort,
+		MiracleSort,
+		SnowFlakeSort,
+		BozoSort
 	};
 
 	// -1 vacio, >= 0 el indx de Algorithms, le agrego un espacio mas para el codigo de la caida
@@ -71,13 +145,16 @@ class Display {
 
 	// >> VISUALIZER RELATED VARIABLES <<
 	short sampleSize;
-	int possibleSamples[samplesN] = { 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000 };
+	int possibleSamples[samplesN] = { 5, 10, 20, 50, 100, 200, 500,
+									  1*M, 2*M, 5*M, 10*M, 20*M, 50*M, 100*M, 200*M, 500*M,
+									  1*M*M, 2*M*M, 5*M*M, 10*M*M };
 	std::string possibleSamplesStr[samplesN] = { "5", "10", "20", "50", "100", "200", "500", "1.000", "2.000",
-										         "5.000", "10.000", "20.000", "50.000", "100.000" };
+												 "5.000", "10.000", "20.000", "50.000", "100.000", "200.000",
+												 "500.000", "1.000.000", "2.000.000", "5.000.000", "10.000.000" };
 
 	short visualizerTime;
-	int possibleTimes[timesN] = {0, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000};
-	std::string possibleTimesStr[timesN] = { "0", "1", "2", "5", "10", "20", "50", "100", "200", "500", "1", "2", "5", "10"};
+	int possibleTimes[timesN] = { 0, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000 };
+	std::string possibleTimesStr[timesN] = { "0", "1", "2", "5", "10", "20", "50", "100", "200", "500", "1", "2", "5", "10" };
 
 	Cell cells[4];
 

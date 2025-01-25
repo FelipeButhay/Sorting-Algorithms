@@ -47,9 +47,14 @@ void Display::draw() {
 void Display::measureAlgorithmTime(Cell* cell) {
 	cell->isSorting = true;
 	cell->executionTimeStart = std::chrono::high_resolution_clock::now();
+
 	if (cell->visual) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+		ShuffleVisual(*cell);
+		std::this_thread::sleep_for(std::chrono::milliseconds(1500));
 		cell->algorithmFuncVisual(*cell);
 	} else {
+		Shuffle(*cell);
 		cell->algorithmFunc(cell->array, cell->isSorting);
 	}
 
@@ -60,6 +65,7 @@ void Display::measureAlgorithmTime(Cell* cell) {
 	cell->iter2 = -1;
 	cell->iter3 = -1;
 	cell->iter4 = -1;
+	cell->iter5 = -1;
 
 	cell->executionTime = cell->executionTimeEnd - cell->executionTimeStart;
 	cell->isSorting = false;

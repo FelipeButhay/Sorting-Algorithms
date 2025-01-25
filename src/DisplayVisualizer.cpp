@@ -106,7 +106,7 @@ void Display::visualizeCell(Cell* cell) {
 				int barH = cu*15.0f*barPerCent;
 
 				DrawRectangle(cb.x + offset + barW*i, cb.y + cb.height - cu - barH, barW, barH, 
-					(i == cell->iter1) || (i == cell->iter2) || (i == cell->iter3) || (i == cell->iter4) ? 
+					(i == cell->iter1) || (i == cell->iter2) || (i == cell->iter3) || (i == cell->iter4) || (i == cell->iter5) ?
 					WHITE : rainbowGen(360*barPerCent));
 			}
 		}

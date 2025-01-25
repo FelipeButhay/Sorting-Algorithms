@@ -17,6 +17,7 @@ typedef struct Cell {
 	std::atomic<int> iter2;
 	std::atomic<int> iter3;
 	std::atomic<int> iter4;
+	std::atomic<int> iter5;
 
 	bool visual;
 	bool alive;
@@ -31,6 +32,7 @@ typedef struct Cell {
 	std::chrono::duration<double, std::milli> executionTime;
 
 	std::vector<int> array;
+	std::vector<int> rNumbers;
 
 	std::thread thread;
 	std::mutex mutex;
