@@ -3,8 +3,10 @@
 int main(void) {
 	Display display;
 
-	while (!WindowShouldClose()) {
+	while (true) {
 		display.loop();
+
+		if (WindowShouldClose()) break;
 
 		BeginDrawing();
 			display.draw();

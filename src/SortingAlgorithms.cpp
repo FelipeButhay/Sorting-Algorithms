@@ -17,7 +17,7 @@ void ShuffleVisual(Cell& cell) {
             std::swap(cell.array[i], cell.array[j]);
         }
         if (!cell.isSorting) return;
-        std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval*3));
+        std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval));
     }
 }
 
@@ -212,16 +212,15 @@ void DoubleSelectionSort(std::vector<int>& arr, std::atomic<bool>& isSorting) {
 void InsertionSort(Cell& cell) {
     for (cell.iter1 = 1; cell.iter1 < cell.array.size(); cell.iter1++) {
         for (cell.iter2 = (int)cell.iter1; cell.iter2 > 0; cell.iter2--) {
-
-            if (!cell.isSorting) return;
-            std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval));
-
             if (cell.array[cell.iter2] < cell.array[cell.iter2-1]) {
                 std::lock_guard<std::mutex> lock(cell.mutex);
                 std::swap(cell.array[cell.iter2], cell.array[cell.iter2-1]);
             } else {
                 break;
             }
+
+            if (!cell.isSorting) return;
+            std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval));
         }
     }
 }
@@ -234,6 +233,8 @@ void InsertionSort(std::vector<int>& arr, std::atomic<bool>& isSorting) {
             } else {
                 break;
             }
+
+            if (!isSorting) return;
         }
     }
 }
@@ -246,8 +247,6 @@ void BinaryInsertionSort(Cell& cell) {
         int right = cell.iter1 - 1;
 
         while (left <= right) {
-            if (!cell.isSorting) return;
-
             cell.iter2 = left + (right - left) / 2;
             if (key < cell.array[cell.iter2]) {
                 right = cell.iter2 - 1;
@@ -255,6 +254,7 @@ void BinaryInsertionSort(Cell& cell) {
                 left = cell.iter2 + 1;
             }
 
+            if (!cell.isSorting) return;
             std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval*5));
         }
 
@@ -266,8 +266,9 @@ void BinaryInsertionSort(Cell& cell) {
 
             std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval));
             cell.array.insert(cell.array.begin() + left, key);
-
         }
+
+        if (!cell.isSorting) return;
     }
 }
 
@@ -290,6 +291,8 @@ void BinaryInsertionSort(std::vector<int>& arr, std::atomic<bool>& isSorting) {
 
         arr.erase(arr.begin() + i);
         arr.insert(arr.begin() + left, key);
+
+        if (!isSorting) return;
     }
 }
 
@@ -384,7 +387,7 @@ void QuickSort(Cell& cell, const int indxF, const int indxL) {
     std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval));
     if (indxF < indxL) {
         const int midIndx = Partition(cell, indxF, indxL);
-        if (midIndx == -69) return;
+        if (midIndx == -69 || !cell.isSorting) return;
 
         QuickSort(cell, indxF, midIndx - 1);
         QuickSort(cell, midIndx + 1, indxL);
@@ -419,7 +422,7 @@ int Partition(std::vector<int>& arr, std::atomic<bool>& isSorting, const int ind
 void QuickSort(std::vector<int>& arr, std::atomic<bool>& isSorting, const int indxF, const int indxL) {
     if (indxF < indxL) {
         const int midIndx = Partition(arr, isSorting, indxF, indxL);
-        if (midIndx == -69) return;
+        if (midIndx == -69 || !isSorting) return;
 
         QuickSort(arr, isSorting, indxF, midIndx - 1);
         QuickSort(arr, isSorting, midIndx + 1, indxL);
@@ -601,6 +604,7 @@ void HeapSort(Cell& cell) {
     std::atomic<int>* i = &cell.iter1;
     for (*i = cell.array.size()/2 - 1; *i >= 0; (*i)--) {
         MaxHeapify(cell, *i, cell.array.size());
+        if (!cell.isSorting) return;
     }
 
     for (*i = cell.array.size() - 1; *i > 0; (*i)--) {
@@ -608,9 +612,9 @@ void HeapSort(Cell& cell) {
             std::lock_guard<std::mutex> lock(cell.mutex);
             std::swap(cell.array[0], cell.array[*i]);
         }
+        MaxHeapify(cell, 0, *i);
         if (!cell.isSorting) return;
         std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval));
-        MaxHeapify(cell, 0, *i);
     }
 }
 
@@ -638,11 +642,13 @@ void MaxHeapify(std::vector<int>& arr, std::atomic<bool>& isSorting, const int i
 void HeapSort(std::vector<int>& arr, std::atomic<bool>& isSorting) {
     for (int i = arr.size()/2 - 1; i >= 0; i--) {
         MaxHeapify(arr, isSorting, i, arr.size());
+        if (!isSorting) return;
     }
 
     for (int i = arr.size() - 1; i > 0; i--) {
         std::swap(arr[0], arr[i]);
         MaxHeapify(arr, isSorting, 0, i);
+        if (!isSorting) return;
     }
 }
 
@@ -731,8 +737,8 @@ void ShellSort(std::vector<int>& arr, std::atomic<bool>& isSorting) {
     while (true) {
         for (int i = 0; i<gap; i++) {
             for (int j = i + gap; j < n; j += gap) {
-                if (!isSorting) return;
                 for (int k = j; k >= gap; k -= gap) {
+                    if (!isSorting) return;
                     if (arr[k] < arr[k - gap]) {
                         std::swap(arr[k], arr[k - gap]);
                     } else {
@@ -789,7 +795,7 @@ void BucketSort(Cell& cell) {
             (*i)++;
 
             if (!cell.isSorting) return;
-            std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval*20));
+            std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval*40));
         }
     }
 
@@ -885,6 +891,7 @@ void CountingSort(std::vector<int>& arr, std::atomic<bool>& isSorting) {
         if (maxValue < arr[i]) {
             maxValue = arr[i];
         }
+        if (!isSorting) return;
     }
 
     std::vector<int> countingVec(maxValue + 1);
@@ -892,15 +899,18 @@ void CountingSort(std::vector<int>& arr, std::atomic<bool>& isSorting) {
 
     for (int i = 0; i<arr.size(); i++) {
         countingVec[arr[i]]++;
+        if (!isSorting) return;
     }
 
     for (int i = 1; i<countingVec.size(); i++) {
         countingVec[i] += countingVec[i-1];
+        if (!isSorting) return;
     }
 
     for (int i = originalArr.size() - 1; i >= 0; i--) {
         arr[countingVec[originalArr[i]] - 1] = originalArr[i];
         countingVec[originalArr[i]]--;
+        if (!isSorting) return;
     }
 }
 
@@ -942,16 +952,19 @@ void OneDigitCountingSort(std::vector<int>& arr, std::atomic<bool>& isSorting, i
 
     for (int i = 0; i<arr.size(); i++) {
         countingVec[(arr[i] / (int)pow(10, power)) % 10]++;
+        if (!isSorting) return;
     }
 
     for (int i = 1; i<countingVec.size(); i++) {
         countingVec[i] += countingVec[i-1];
+        if (!isSorting) return;
     }
 
     for (int i = originalArr.size() - 1; i >= 0; i--) {
         int digit = (originalArr[i] / (int)pow(10, power)) % 10;
         arr[countingVec[digit] - 1] = originalArr[i];
         countingVec[digit]--;
+        if (!isSorting) return;
     }
 }
 
@@ -971,6 +984,7 @@ void LSDRadixSort(Cell& cell) {
 
     for (int p = 0; maxValue / (int)pow(10, p) > 0; p++) {
         OneDigitCountingSort(cell, p);
+        if (!cell.isSorting) return;
     }
 }
 
@@ -980,16 +994,19 @@ void LSDRadixSort(std::vector<int>& arr, std::atomic<bool>& isSorting) {
         if (maxValue < arr[i]) {
             maxValue = arr[i];
         }
+
+        if (!isSorting) return;
     }
 
     for (int p = 0; maxValue / (int)pow(10, p) > 0; p++) {
         OneDigitCountingSort(arr, isSorting, p);
+        if (!isSorting) return;
     }
 }
 
 // MSD RADIX SORT
 void MSDRadixSortRecursive(Cell& cell, int power, std::vector<int>& subArr, int subArrStartIndx) {
-    if (power < 0 || subArr.size() <= 1) return;
+    if (power < 0 || subArr.size() <= 1 || !cell.isSorting) return;
 
     OneDigitCountingSort(subArr, cell.isSorting, power);
 
@@ -1045,7 +1062,7 @@ void MSDRadixSort(Cell& cell) {
 }
 
 void MSDRadixSortRecursive(std::vector<int>& arr, std::atomic<bool>& isSorting, int power, std::vector<int>& subArr, int subArrStartIndx) {
-    if (power < 0 || subArr.size() <= 1) return;
+    if (power < 0 || subArr.size() <= 1 || !isSorting) return;
 
     OneDigitCountingSort(subArr, isSorting, power);
 
@@ -1139,6 +1156,7 @@ void PancakeSort(std::vector<int>& arr, std::atomic<bool>& isSorting) {
             if (arr[minflag] > arr[j]) {
                 minflag = j;
             }
+            if (!isSorting) return;
         }
 
         PancakeFlip(arr, minflag);
@@ -1150,55 +1168,302 @@ void PancakeSort(std::vector<int>& arr, std::atomic<bool>& isSorting) {
 
 // CYCLE SORT
 void CycleSort(Cell& cell) {
-    int swaps = 0;
-    int savedValue = 0;
-    int currentValue = cell.array[0];
+    for (int cycleStart = 0; cycleStart < cell.array.size(); cycleStart++) {
+        int currentValue = cell.array[cycleStart];
 
-    std::atomic<int>* i = &cell.iter1;
-    std::atomic<int>* j = &cell.iter2;
-
-    while (swaps < cell.array.size()) {
-        *j = 0;
-        for (*i = 0; *i<cell.array.size(); (*i)++) {
-            if (cell.array[*i] < currentValue) {
-                (*j)++;
+        std::atomic<int>* i = &cell.iter1;
+        *i = cycleStart;
+        for (int j = cycleStart + 1; j < cell.array.size(); j++) {
+            if (cell.array[j] < currentValue) {
+                (*i)++;
             }
+
+            if (!cell.isSorting) return;
+            std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval));
+        }
+
+        if (currentValue == cell.array[*i]) {
+            continue;
+        }
+
+        while (currentValue == cell.array[*i]) {
+            (*i)++;
+
             if (!cell.isSorting) return;
             std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval));
         }
 
         {
             std::lock_guard<std::mutex> lock(cell.mutex);
-            savedValue = cell.array[*j];
-            cell.array[*j] = currentValue;
-            currentValue = savedValue;
+            std::swap(cell.array[*i], currentValue);
         }
-        swaps++;
+        while (*i != cycleStart) {
+            *i = cycleStart;
+            for (int j = cycleStart + 1; j < cell.array.size(); j++) {
+                if (cell.array[j] < currentValue) {
+                    (*i)++;
+                }
+                if (!cell.isSorting) return;
+                std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval));
+            }
 
-        if (!cell.isSorting) return;
-        std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval));
+            while (currentValue == cell.array[*i]) {
+                (*i)++;
+
+                if (!cell.isSorting) return;
+                std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval));
+            }
+
+            {
+                std::lock_guard<std::mutex> lock(cell.mutex);
+                std::swap(cell.array[*i], currentValue);
+            }
+        }
     }
 }
 
 void CycleSort(std::vector<int>& arr, std::atomic<bool>& isSorting) {
-    int swaps = 0;
-    int savedValue = 0;
-    int currentValue = arr[0];
+    for (int cycleStart = 0; cycleStart < arr.size(); cycleStart++) {
+        int currentValue = arr[cycleStart];
 
-    while (swaps < arr.size()) {
-        int nSmaller = 0;
-        for (int i = 0; i<arr.size(); i++) {
+        int pos = cycleStart;
+        for (int i = cycleStart + 1; i < arr.size(); i++) {
             if (arr[i] < currentValue) {
-                nSmaller++;
+                pos++;
             }
+        
             if (!isSorting) return;
         }
-        savedValue = arr[nSmaller];
-        arr[nSmaller] = currentValue;
-        currentValue = savedValue;
-        swaps++;
+        
+        if (currentValue == arr[pos]) {
+            continue;
+        }
+        
+        while (currentValue == arr[pos]) {
+            pos++;
+        }
+        
+        std::swap(arr[pos], currentValue);
+        while (pos != cycleStart) {
+            pos = cycleStart;
+            for (int j = cycleStart + 1; j < arr.size(); j++) {
+                if (arr[j] < currentValue) {
+                    pos++;
+                }
+        
+                if (!isSorting) return;
+            }
+        
+            while (currentValue == arr[pos]) {
+                pos++;
+        
+                if (!isSorting) return;
+            }
+        
+            std::swap(arr[pos], currentValue);
+        }
+    }
+}
+
+// EXCHANGE SORT
+void ExchangeSort(Cell& cell) {
+    int arraySize = cell.array.size();
+    for (int i = 0; i<arraySize-1; i++) {
+        for (int j = i + 1; j<arraySize; j++) {
+            if (cell.array[j] < cell.array[i]) {
+                std::lock_guard<std::mutex> lock(cell.mutex);
+                std::swap(cell.array[j], cell.array[i]);
+            }
+
+            if (!cell.isSorting) return;
+            std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval));
+        }
+    }
+}
+
+void ExchangeSort(std::vector<int>& arr, std::atomic<bool>& isSorting) {
+    int arraySize = arr.size();
+    for (int i = 0; i<arraySize-1; i++) {
+        for (int j = i + 1; j<arraySize; j++) {
+            if (arr[j] < arr[i]) {
+                std::swap(arr[j], arr[i]);
+            }
+
+            if (!isSorting) return;
+        }
+    }
+}
+
+// PATIENCE SORT
+void MinHeapify(std::vector<std::vector<int>>& arr, std::atomic<bool>& isSorting, const int i, const int n) {
+    if (!isSorting) return;
+
+    int father = i;
+    int child1 = 2*father + 1;
+    int child2 = 2*father + 2;
+
+    if (child1 < n && arr[child1].back() < arr[father].back()) {
+        father = child1;
+    }
+    if (child2 < n && arr[child2].back() < arr[father].back()) {
+        father = child2;
+    }
+
+    if (father != i) {
+        std::swap(arr[father], arr[i]);
+        MinHeapify(arr, isSorting, father, n);
+    }
+}
+
+void PatienceSort(Cell& cell) {
+    std::vector<std::vector<int>> piles;
+    for (int i = 0; i < cell.array.size(); i++) {
+        int j = 0;
+        for (int p = 0; p < piles.size(); p++) {
+            for (int pp = 0; pp < piles[p].size(); pp++) {
+                std::lock_guard<std::mutex> lock(cell.mutex);
+                cell.array[j] = piles[p][pp];
+                j++;
+            }
+        }
+
+        bool placed = false;
+
+        for (int p = 0; p < piles.size(); p++) {
+            if (piles[p].back() > cell.array[i]) {
+                piles[p].push_back(cell.array[i]);
+                placed = true;
+                break;
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval));
+        }
+
+        if (!placed) {
+            piles.emplace_back(1, cell.array[i]);
+        }
+
+        if (!cell.isSorting) return;
+        std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval));
+    }
+
+    for (int i = piles.size()/2 - 1; i >= 0; i--) {
+        MinHeapify(piles, cell.isSorting, i, piles.size());
+
+        if (!cell.isSorting) return;
+        std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval));
+    }
+
+    for (int i = 0; i < cell.array.size(); i++) {
+        {
+            std::lock_guard<std::mutex> lock(cell.mutex);
+            cell.array[i] = piles[0].back();
+        }
+        piles[0].pop_back();
+
+        if (piles[0].empty()) {
+            std::swap(piles[0], piles.back());
+            piles.pop_back();
+        }
+
+        if (!piles.empty()) {
+            MinHeapify(piles, cell.isSorting, 0, piles.size());
+        }
+
+        int j = i + 1;
+        for (int p = 0; p < piles.size(); p++) {
+            for (int pp = 0; pp < piles[p].size(); pp++) {
+                std::lock_guard<std::mutex> lock(cell.mutex);
+                cell.array[j] = piles[p][pp];
+                j++;
+            }
+        }
+
+        if (!cell.isSorting) return;
+        std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval*20));
+    }
+}
+
+void PatienceSort(std::vector<int>& arr, std::atomic<bool>& isSorting) {
+    std::vector<std::vector<int>> piles;
+    for (int i = 0; i < arr.size(); i++) {
+        bool placed = false;
+
+        for (int p = 0; p < piles.size(); p++) {
+            if (piles[p].back() > arr[i]) {
+                piles[p].push_back(arr[i]);
+                placed = true;
+                break;
+            }
+        }
+
+        if (!placed) {
+            piles.emplace_back(1, arr[i]);
+        }
 
         if (!isSorting) return;
+    }
+
+    for (int i = piles.size()/2 - 1; i >= 0; i--) {
+        MinHeapify(piles, isSorting, i, piles.size());
+        if (!isSorting) return;
+    }
+
+    for (int i = 0; i < arr.size(); ++i) {
+        arr[i] = piles[0].back();
+        piles[0].pop_back();
+
+        if (piles[0].empty()) {
+            std::swap(piles[0], piles.back());
+            piles.pop_back();
+        }
+
+        if (!piles.empty()) {
+            MinHeapify(piles, isSorting, 0, piles.size());
+        }
+
+        if (!isSorting) return;
+    }
+}
+
+// ODD EVEN SORT
+void OddEvenSort(Cell& cell) {
+    std::atomic<int>* i = &cell.iter1;
+    std::atomic<int>* j = &cell.iter2;
+
+    int n = cell.array.size();
+    int nSwaps = 1;
+    while (nSwaps != 0) {
+        nSwaps = 0;
+
+        for (int k = 0; k < 2; k++) {
+            for (*i = k, *j = 1 + k; *i < cell.array.size() - k; (*i) += 2, (*j) += 2) {
+                if (cell.array[*i] > cell.array[*i + 1]) {
+                    std::lock_guard<std::mutex> lock(cell.mutex);
+                    std::swap(cell.array[*i], cell.array[*j]);
+                    nSwaps++;
+                }
+                if (!cell.isSorting) return;
+                std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval));
+            }
+        }
+    }
+}
+
+void OddEvenSort(std::vector<int>& arr, std::atomic<bool>& isSorting) {
+    int n = arr.size();
+    int nSwaps = 1;
+    while (nSwaps != 0) {
+        nSwaps = 0;
+
+        for (int k = 0; k < 2; k++) {
+            for (int i = k; i < arr.size() - k; i += 2) {
+                if (arr[i] > arr[i + 1]) {
+                    std::swap(arr[i], arr[i + 1]);
+                    nSwaps++;
+                }
+                if (!isSorting) return;
+            }
+        }
     }
 }
 
@@ -1306,69 +1571,6 @@ void MiracleSort(Cell& cell) {
 
 void MiracleSort(std::vector<int>& arr, std::atomic<bool>& isSorting) {
     while (!isSorted(arr)) {
-        if (!isSorting) return;
-    }
-}
-
-// SNOW FLAGE SORT
-float StalinCheck(std::vector<int>& arr) {
-    std::vector<int> stalinSorted = { arr[0] };
-
-    for (int i = 1; i<arr.size(); i++) {
-        if (arr[i] >= stalinSorted.back()) {
-            stalinSorted.push_back(arr[i]);
-        }
-    }
-
-    return stalinSorted.size()/(float)(arr.size());
-}
-
-void SnowFlakeSort(Cell& cell) {
-    float solvedPercentage = StalinCheck(cell.array);
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(0, cell.array.size() - 1);
-
-    while (solvedPercentage != 1) {
-        cell.iter1 = dis(gen);
-        cell.iter2 = dis(gen);
-
-        {
-            std::lock_guard<std::mutex> lock(cell.mutex);
-            std::swap(cell.array[cell.iter1], cell.array[cell.iter2]);
-        }
-
-        float newSolvedPercentage = StalinCheck(cell.array);
-        if (newSolvedPercentage >= solvedPercentage) {
-            solvedPercentage = newSolvedPercentage;
-        } else {
-            std::swap(cell.array[cell.iter1], cell.array[cell.iter2]);
-        }
-        if (!cell.isSorting) return;
-        std::this_thread::sleep_for(std::chrono::milliseconds(cell.interval));
-    }
-}
-
-void SnowFlakeSort(std::vector<int>& arr, std::atomic<bool>& isSorting) {
-    float solvedPercentage = StalinCheck(arr);
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(0, arr.size() - 1);
-
-    while (solvedPercentage != 1) {
-        int i = dis(gen);
-        int j = dis(gen);
-
-        std::swap(arr[i], arr[j]);
-
-        float newSolvedPercentage = StalinCheck(arr);
-        if (newSolvedPercentage >= solvedPercentage) {
-            solvedPercentage = newSolvedPercentage;
-        } else {
-            std::swap(arr[i], arr[j]);
-        }
         if (!isSorting) return;
     }
 }

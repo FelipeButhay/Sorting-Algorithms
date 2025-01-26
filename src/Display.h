@@ -9,7 +9,7 @@
 #define DARKWHITE  CLITERAL(Color){ 170, 170, 170, 255 }
 #define DARKRED    CLITERAL(Color){ 135,   9,   9, 255 }
 
-#define algorithmsN 23
+#define algorithmsN 25
 #define lineSizeU 1.4
 
 #define samplesN 20
@@ -32,32 +32,34 @@ class Display {
 
 	// lista de los nombres de los algoritmos
 	std::string algorithms[algorithmsN] = {
-		"Bubble Sort",
-		"Shaker Sort",
-		"Selection Sort",
-		"Double Selection Sort",
-		"Insertion Sort",
-		"Binary Insertion Sort",
+		"Bubble",
+		"Shaker",
+		"Selection",
+		"Double Selection",
+		"Insertion",
+		"Binary Insertion",
 
-		"Quick Sort",
-		"Merge Sort",
-		"Heap Sort",
-		"Comb Sort",
-		"Shell Sort",
-		"Bucket Sort",
-		"Counting Sort",
-		"LSD Radix Sort",
-		"MSD Radix Sort",
+		"Quick",
+		"Merge",
+		"Heap",
+		"Comb",
+		"Shell",
+		"Bucket",
+		"Counting",
+		"LSD Radix",
+		"MSD Radix",
 
-		"Pancake Sort",
-		"Cycle Sort",
+		"Pancake",
+		"Cycle",
+		"Exchange",
+		"Patience",
+		"Odd Even",
 
-		"*Bogo Sort",
-		"*Stalin Sort",
-		"*Sleep Sort",
-		"*Miracle Sort",
-		"*SnowFlakeSort",
-		"*Bozo Sort"
+		"*Bogo",
+		"*Stalin",
+		"*Sleep",
+		"*Miracle",
+		"*Bozo"
 	};
 
 	// lista de punteros a las funciones de los algoritmos
@@ -81,12 +83,14 @@ class Display {
 
 		PancakeSort,
 		CycleSort,
+		ExchangeSort,
+		PatienceSort,
+		OddEvenSort,
 
 		BogoSort,
 		StalinSort,
 		SleepSort,
 		MiracleSort,
-		SnowFlakeSort,
 		BozoSort
 	};
 	void (*algorithmFuncVisualPtr[algorithmsN])(Cell&) = {
@@ -109,12 +113,14 @@ class Display {
 
 		PancakeSort,
 		CycleSort,
+		ExchangeSort,
+		PatienceSort,
+		OddEvenSort,
 
 		BogoSort,
 		StalinSort,
 		SleepSort,
 		MiracleSort,
-		SnowFlakeSort,
 		BozoSort
 	};
 

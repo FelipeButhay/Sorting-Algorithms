@@ -66,6 +66,15 @@ void PancakeSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
 void CycleSort(Cell& cell);
 void CycleSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
 
+void ExchangeSort(Cell& cell);
+void ExchangeSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
+
+void PatienceSort(Cell& cell);
+void PatienceSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
+
+void OddEvenSort(Cell& cell);
+void OddEvenSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
+
 // ESOTERICS
 
 void BogoSort(Cell& cell);
@@ -79,9 +88,6 @@ void SleepSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
 
 void MiracleSort(Cell& cell);
 void MiracleSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
-
-void SnowFlakeSort(Cell& cell);
-void SnowFlakeSort(std::vector<int>& arr, std::atomic<bool>& isSorting);
 
 void BozoSort(Cell& cell);
 void BozoSort(std::vector<int>& arr, std::atomic<bool>& isSorting);

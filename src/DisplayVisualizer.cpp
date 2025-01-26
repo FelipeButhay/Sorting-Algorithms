@@ -47,7 +47,7 @@ void Display::visualizeCell(Cell* cell) {
 	unsigned long long int msTime;
 	if (cell->isSorting) {
 		auto now = std::chrono::high_resolution_clock::now();
-		msTime = (now - cell->executionTimeStart).count();
+		msTime = (now - cell->executionTimeStart).count() / (1*M*M);
 	} else {
 		msTime = (cell->executionTime).count();
 	}
@@ -133,9 +133,9 @@ void Display::visualizeCell(Cell* cell) {
 
 		// textos
 		DrawText(algorithmNameChar, cb.x + cu*24, cb.y + cu*6, cu*8, WHITE);
-		DrawText(sampleChar, cb.x + cb.width - cu*12 - MeasureText("000:00.000", cu*8) - MeasureText(sampleChar, cu*8), 
+		DrawText(sampleChar, cb.x + cb.width - cu*18 - MeasureText("000:00.000", cu*8) - MeasureText(sampleChar, cu*8), 
 			cb.y + cu*6, cu*8, WHITE);
-		DrawText(timeChar, cb.x + cb.width - cu*6 - MeasureText(timeChar, cu*8), cb.y + cu*6, cu*8, WHITE);
+		DrawText(timeChar, cb.x + cb.width - cu*6 - MeasureText("000:00.000", cu*8), cb.y + cu*6, cu*8, WHITE);
 
 	}
 

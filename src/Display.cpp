@@ -49,9 +49,9 @@ void Display::measureAlgorithmTime(Cell* cell) {
 	cell->executionTimeStart = std::chrono::high_resolution_clock::now();
 
 	if (cell->visual) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 		ShuffleVisual(*cell);
-		std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 		cell->algorithmFuncVisual(*cell);
 	} else {
 		Shuffle(*cell);
