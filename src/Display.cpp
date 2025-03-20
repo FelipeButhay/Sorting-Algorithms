@@ -1,7 +1,7 @@
 #include "Display.h"
 
 Display::Display() {
-	this->resolution = 4;
+	this->resolution = 0;
 	this->sx = difResolutions[resolution%8][0];
 	this->sy = difResolutions[resolution%8][1];
 	this->u = sy*0.05f;
